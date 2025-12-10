@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osaka Bouldering</title>
+    <link rel="stylesheet" href="css/form.css">
+    <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap">  
+    <link rel="icon" type="image/svg" sizes="64x64" href="img/Group 31.svg">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <header>
+        <a href="index.html"><h1><img src="img/osaka climb2.jpg" alt="Osaka Bouldering"></h1></a>
+        <nav>
+            <ul>
+                <li><a href="index.html">ジム一覧</a></li>
+                <li><a href="beginner.html">初心者ガイド</a></li>
+                <li><a href="form.html">お問い合わせ</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h1>お問い合わせ</h1>
+            <form action="" method="post">
+                <div class="form-group">
+                    <label for="myname">お名前<span class="required">必須</span></label>
+                    <input type="text" id="myname" name="myname" placeholder="例: 山田太郎" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">メールアドレス<span class="required">必須</span></label>
+                    <input type="email" id="email" name="email" placeholder="例: example@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label>性別</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="gender" value="male">
+                            <span>男性</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="gender" value="female">
+                            <span>女性</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="gender" value="">
+                            <span>回答しない</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>興味のあるカテゴリー</label>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="interest[]" value="ボルダリング">
+                            <span>ボルダリング</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="interest[]" value="リードクライミング">
+                            <span>リードクライミング</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="interest[]" value="スピード">
+                            <span>スピード</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="interest[]" value="トップロープ">
+                            <span>トップロープ</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="age-select">年齢</label>
+                    <select name="age-select" id="age-select">
+                        <option value="">選択して下さい</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">お問い合わせ内容<span class="required">必須</span></label>
+                    <textarea name="message" id="message" rows="10" required></textarea>
+                </div>
+                <button type="submit" class="btn">送信</button>
+            </form>
+        </div>
+    </main> 
+    <footer>
+        <img src="img/osaka climb2.jpg" alt="Osaka Bouldering">
+        <p>Copyright &copy; 2025 Osaka Bouldering</p>
+    </footer>
+    <script>
+        // 1. 年齢セレクトボックスのオプション生成
+        const selectElement = document.getElementById('age-select');
+        if (selectElement) {
+            for (let i = 1; i <= 80; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i + '歳';
+                selectElement.appendChild(option);
+            }
+        }
+    </script>
+    
+    <script>
+        $(function() {
+            const $form = $('form');
+            const $submitBtn = $form.find('.btn');
+            
+            // 1. ページロード時にボタンを無効化
+            $submitBtn.prop('disabled', true);
+            
+            // 2. すべての必須フィールドが入力されているかチェックする関数
+            function checkFormCompletion() {
+                let allFilled = true;
+    
+                // ① 必須項目（お名前, メールアドレス, お問い合わせ内容）と年齢のチェック
+                // required属性を持つ要素と、年齢セレクトボックスをチェック
+                $form.find('input[required], textarea[required], #age-select').each(function() {
+                    if ($(this).val().trim() === "" || $(this).val() === null) {
+                        allFilled = false;
+                        return false; // ループを抜ける
+                    }
+                });
+    
+                if (!allFilled) return false;
+    
+                // ② ラジオボタン（性別）のチェック
+                // 3つの選択肢のうち、どれか1つがチェックされていることを確認
+                if ($('input[name="gender"]:checked').length === 0) {
+                     allFilled = false;
+                }
+                
+                // チェックボックス（興味のあるカテゴリー）は必須ではないためスキップ
+    
+                return allFilled;
+            }
+    
+            // 3. フォーム内の入力要素に変更があったときにチェックを実行
+            $form.on('input change', 'input, textarea, select', function() {
+                if (checkFormCompletion()) {
+                    // すべて入力されていたら有効化
+                    $submitBtn.prop('disabled', false);
+                } else {
+                    // 一つでも未入力があれば無効化
+                    $submitBtn.prop('disabled', true);
+                }
+            }).trigger('change'); // ページロード時にも一度チェックを実行
+        });
+    </script>
+</body>
+</html>
